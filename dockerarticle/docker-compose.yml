@@ -1,0 +1,38 @@
+version: "3" 
+services:
+  # Servidor Web
+  nginx:
+    image: nginx:1.23.1
+    volumes:
+      - "./app:/var/www/html"      
+    ports:
+      - "80:80"
+    depends_on:
+      - php
+
+  # Camada de Aplicação
+  php:
+    image: webdevops/php-apache-dev
+    volumes:
+      - "./app:/var/www/html"
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mysql
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_PASS=mudar@123
+  
+  # Persistência de dados
+  mysql:
+    image: mysql:latest
+    volumes:
+      - "db_data:/var/lib/mysql"
+      - "./mysql/data:/docker-entrypoint-initdb.d"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=mudar@123
+
+volumes:
+  db_data:
